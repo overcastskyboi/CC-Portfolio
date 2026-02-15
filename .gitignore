@@ -1,2 +1,7 @@
+# Ignore the actual music files
 music/
-assets/img/
+assets/img/music_covers/
+
+# Do NOT ignore the scripts or styles
+!assets/js/
+!assets/css/
