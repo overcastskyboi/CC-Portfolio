@@ -73,54 +73,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Systems Page Specifics (Real-time Telemetry) ---
     if (document.body.classList.contains('page-systems')) {
-        const telemetryEndpoint = 'http://129.80.222.26:3000/metrics';
-
+        /**
+         * LIVE OCI TELEMETRY FETCH
+         * Connected to CEC Metrics API @ 129.80.222.26
+         */
         async function updateLiveTelemetry() {
+            const telemetryEndpoint = 'http://129.80.222.26:3000/metrics';
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            
             try {
                 const response = await fetch(telemetryEndpoint);
-                if (!response.ok) throw new Error('Telemetry Offline');
+                if (!response.ok) throw new Error('Network response was not ok');
                 
                 const data = await response.json();
 
-                // Map API data to your DOM elements
-                document.getElementById('cpu-perc').innerText = `${Math.floor(data.cpu)}%`;
-                document.getElementById('ram-perc').innerText = `${Math.floor(data.mem)}%`;
-                
-                // Update progress bars (assuming they have specific IDs)
-                document.getElementById('cpu-fill').style.width = `${data.cpu}%`;
-                document.getElementById('ram-fill').style.width = `${data.mem}%`;
-
-                // Update sys-load (if element exists)
-                const sysLoadElement = document.getElementById('sys-load'); // This ID is not in systems.html, add conditional check
-                if (sysLoadElement) sysLoadElement.innerText = data.load;
-                
-                // Convert seconds to a readable Uptime string (H:M:S)
-                const uptimeValElement = document.getElementById('uptime-val'); // Correct ID from systems.html
-                if (uptimeValElement) {
-                    const h = Math.floor(data.uptime / 3600);
-                    const m = Math.floor((data.uptime % 3600) / 60);
-                    const s = Math.floor(data.uptime % 60);
-                    uptimeValElement.innerText = `${h}h ${m}m ${s}s`;
+                // Update the UI elements
+                // Ensure these IDs match your HTML!
+                if(document.getElementById('cpu-perc')) { 
+                    document.getElementById('cpu-perc').innerText = `${data.cpu}%`;
                 }
-            } catch (error) {
-                console.error('Metrics Fetch Error:', error);
-                // Fallback UI state if the API is down
-                document.getElementById('cpu-perc').innerText = 'OFFLINE';
-                document.getElementById('ram-perc').innerText = 'OFFLINE';
-                const sysLoadElement = document.getElementById('sys-load');
-                if (sysLoadElement) sysLoadElement.innerText = 'OFFLINE';
-                document.getElementById('uptime-val').innerText = 'OFFLINE';
+                if(document.getElementById('ram-perc')) { 
+                    document.getElementById('ram-perc').innerText = `${data.mem}%`;
+                }
+                // Update progress bars
+                if(document.getElementById('cpu-fill')) { 
+                    document.getElementById('cpu-fill').style.width = `${data.cpu}%`;
+                }
+                if(document.getElementById('ram-fill')) { 
+                    document.getElementById('ram-fill').style.width = `${data.mem}%`;
+                }
+                if(document.getElementById('sys-load')) { 
+                    document.getElementById('sys-load').innerText = data.load;
+                }
                 
-                // Also reset progress bars
-                document.getElementById('cpu-fill').style.width = "0%";
-                document.getElementById('ram-fill').style.width = "0%";
+                // Convert seconds to readable Uptime (Hh Mm)
+                if(document.getElementById('uptime-val')) { 
+                    const hours = Math.floor(data.uptime / 3600);
+                    const mins = Math.floor((data.uptime % 3600) / 60);
+                    document.getElementById('uptime-val').innerText = `${hours}h ${mins}m`;
+                }
+
+                // Update Status Indicator
+                if(statusDot) statusDot.className = 'dot-online';
+                if(statusText) statusText.innerText = 'SERVER LIVE';
+
+            } catch (error) {
+                console.error('Telemetry Fetch Error:', error);
+                // UI Fallback
+                const metrics = ['cpu-perc', 'ram-perc', 'sys-load', 'uptime-val'];
+                metrics.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.innerText = 'OFFLINE';
+                });
+                 // Also reset progress bars
+                if(document.getElementById('cpu-fill')) document.getElementById('cpu-fill').style.width = "0%";
+                if(document.getElementById('ram-fill')) document.getElementById('ram-fill').style.width = "0%";
+                
+                // Update Status Indicator
+                if(statusDot) statusDot.className = 'dot-offline';
+                if(statusText) statusText.innerText = 'SERVER OFFLINE';
             }
         }
-        setInterval(updateLiveTelemetry, 5000); // Refresh every 5 seconds
-        updateLiveTelemetry(); // Initial call
 
-        // Keep Nginx Logs (tail -f) - this was part of the old block but not replaced in the new code.
-        // I will keep the existing Nginx log generation logic, as it's not part of the telemetry API.
+        // Refresh every 10 seconds (don't over-poll the OCI node)
+        setInterval(updateLiveTelemetry, 10000);
+        updateLiveTelemetry(); // Run immediately on load
+
+        // Preserve Nginx Logs (tail -f) - this was part of the old block and needs to be preserved
         setInterval(() => {
             const fakeLogEntries = [
                 `123.45.67.89 - - [${new Date().toLocaleString()}] "GET /index.html HTTP/1.1" 200 1234 "-" "Mozilla/5.0..."`,
