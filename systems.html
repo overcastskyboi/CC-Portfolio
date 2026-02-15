@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colin Elliott Cherry | Systems Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <nav class="navbar">
+        <div class="nav-brand glitch" data-text="CEC_SYSTEMS">CEC_SYSTEMS</div>
+        <ul class="nav-links">
+            <li><a href="index.html">The Hub</a></li>
+            <li><a href="systems.html">./IT_Work</a></li>
+            <li><a href="music.html">/Music</a></li>
+            <li><a href="#" id="cli-toggle" class="btn-cta">Terminal</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content container">
+        <section class="dashboard">
+            <h1 class="glitch section-title" data-text="SYSTEMS_DASHBOARD">SYSTEMS_DASHBOARD</h1>
+
+            <div class="dashboard-grid">
+                <div class="card resource-monitor">
+                    <h2>RESOURCE_MONITOR</h2>
+                    <div class="chart-container">
+                        <div class="chart-label">CPU: <span id="cpu-usage-display">0%</span></div>
+                        <div class="bar-chart cpu-chart"><div class="bar-fill" id="cpu-bar-fill"></div></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-label">RAM: <span id="ram-usage-display">0%</span></div>
+                        <div class="bar-chart ram-chart"><div class="bar-fill" id="ram-bar-fill"></div></div>
+                    </div>
+                </div>
+
+                <div class="card network-monitor">
+                    <h2>NETWORK_MONITOR</h2>
+                    <p>BBR Congestion Control: <span class="status-ok">ACTIVE</span></p>
+                    <div class="graph-placeholder" id="network-graph">
+                        <!-- Simulated network activity/graph -->
+                        <span class="graph-line"></span><span class="graph-line"></span><span class="graph-line"></span>
+                    </div>
+                </div>
+
+                <div class="card storage-monitor">
+                    <h2>STORAGE_MONITOR</h2>
+                    <p>4GB Swap File: <span id="swap-status">ACTIVE</span></p>
+                    <div class="storage-block-grid">
+                        <div class="storage-block used"></div>
+                        <div class="storage-block used"></div>
+                        <div class="storage-block used"></div>
+                        <div class="storage-block available"></div>
+                    </div>
+                </div>
+
+                <div class="card system-info">
+                    <h2>SYSTEM_INFO</h2>
+                    <p>Hostname: <span class="monospaced">cec-oci-instance</span></p>
+                    <p>OS: <span class="monospaced">Oracle Linux 9</span></p>
+                    <p>Uptime: <span id="uptime-display" class="monospaced">00:00:00</span></p>
+                </div>
+
+                <div class="card logs-viewer">
+                    <h2>NGINX_ACCESS_LOG</h2>
+                    <div class="log-output" id="nginx-log-output">
+                        <!-- Log entries will be injected here by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Global CLI Overlay -->
+    <div id="cli-overlay" class="cli-overlay">
+        <div class="cli-window">
+            <div class="cli-header">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                <span class="title">console@cec-portfolio:~$</span>
+            </div>
+            <div class="cli-body">
+                <div id="cli-output" class="cli-output"></div>
+                <div class="cli-prompt-line">
+                    <span class="cli-prompt">console@cec-portfolio:~$</span>
+                    <input type="text" id="cli-input" class="cli-input" autofocus>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="global-audio-player"></audio> <!-- Persistent audio element -->
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

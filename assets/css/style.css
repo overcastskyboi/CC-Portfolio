@@ -1,0 +1,749 @@
+:root {
+    --color-charcoal: #111111;
+    --color-goldenrod: #DAA520;
+    --color-peach: #FED690;
+    --color-terminal-green: #00FF00; /* Bright green for terminal text */
+    --color-text-light: #EEEEEE;
+    --color-text-dark: #333333; /* For text on light elements */
+    --color-border-dark: #333333; /* For terminal windows, etc. */
+    --color-glass-bg: rgba(26, 26, 26, 0.8); /* For navbar, player dock */
+
+    --font-monospace: 'Space Mono', monospace;
+    --font-sans-serif: 'Syne', sans-serif;
+    
+    --spacing-unit: 1rem;
+}
+
+/* Base Styles & Resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans-serif);
+    line-height: 1.6;
+    color: var(--color-text-light);
+    background-color: var(--color-charcoal);
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    padding-bottom: 5rem; /* Space for persistent audio player */
+    transition: background-color 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-unit) * 2;
+}
+
+a {
+    color: var(--color-peach);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--color-goldenrod);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-monospace); /* Default headings to monospace for consistency */
+    color: var(--color-goldenrod);
+    margin-bottom: var(--spacing-unit);
+}
+
+p {
+    margin-bottom: var(--spacing-unit);
+}
+
+/* Scanlines Effect */
+.scanlines {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.6;
+}
+
+/* Navbar (Global Sticky Top Bar) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-unit) 2rem;
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--color-goldenrod);
+    font-family: var(--font-monospace);
+}
+
+.nav-brand {
+    font-weight: 700;
+    color: var(--color-goldenrod);
+    letter-spacing: 2px;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: var(--spacing-unit) * 2;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--color-peach);
+    text-shadow: 0 0 10px var(--color-peach);
+}
+
+.btn-cta {
+    border: 1px solid var(--color-goldenrod);
+    padding: 0.5rem 1rem;
+    color: var(--color-goldenrod) !important;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-cta:hover {
+    background: var(--color-goldenrod);
+    color: var(--color-charcoal) !important;
+    box-shadow: 0 0 15px var(--color-goldenrod);
+}
+
+/* Global CLI Overlay */
+.cli-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 200;
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+}
+
+.cli-overlay.active {
+    display: flex;
+}
+
+.cli-window {
+    width: 90%;
+    max-width: 800px;
+    height: 70%;
+    background-color: var(--color-charcoal);
+    border: 2px solid var(--color-goldenrod);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-monospace);
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.5); /* Golden glow */
+}
+
+.cli-header {
+    background-color: var(--color-border-dark);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--color-goldenrod);
+}
+
+.cli-header .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.cli-header .red { background: #ff5f56; }
+.cli-header .yellow { background: #ffbd2e; }
+.cli-header .green { background: #27c93f; }
+
+.cli-header .title {
+    margin-left: 10px;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.cli-body {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-terminal-green); /* Default terminal output color */
+    font-size: 0.9rem;
+}
+
+.cli-output p {
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+}
+
+.cli-prompt-line {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: auto; /* Push to bottom */
+}
+
+.cli-prompt {
+    color: var(--color-goldenrod);
+    white-space: nowrap;
+}
+
+.cli-input {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    color: var(--color-terminal-green);
+    font-family: var(--font-monospace);
+    font-size: 0.9rem;
+    outline: none;
+    caret-color: var(--color-terminal-green);
+}
+
+/* Global Audio Player Dock */
+.player-dock {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--color-goldenrod);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 2rem;
+    z-index: 100;
+    font-family: var(--font-monospace);
+}
+
+.player-dock .track-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.player-dock .track-name {
+    font-weight: bold;
+    color: var(--color-peach);
+}
+
+.player-dock .track-time {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+}
+
+.player-dock .controls button {
+    background: none;
+    border: none;
+    color: var(--color-goldenrod);
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 0 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.player-dock .controls button:hover {
+    color: var(--color-peach);
+}
+
+.player-dock .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.player-dock #volume-slider {
+    width: 100px;
+    -webkit-appearance: none;
+    height: 4px;
+    background: var(--color-border-dark);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+.player-dock #volume-slider:hover {
+    opacity: 1;
+}
+
+.player-dock #volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--color-goldenrod);
+    cursor: pointer;
+}
+
+.player-dock #volume-slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--color-goldenrod);
+    cursor: pointer;
+}
+
+/* Section Titles (Global) */
+.section-title {
+    text-align: center;
+    margin-top: var(--spacing-unit) * 3;
+    margin-bottom: var(--spacing-unit) * 2;
+    font-size: 2.5rem;
+    color: var(--color-goldenrod);
+}
+
+/* Glitch Effect (Global) */
+.glitch[data-text]:hover {
+    animation: glitch 0.3s infinite alternate;
+}
+.glitch[data-text]:hover::before,
+.glitch[data-text]:hover::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--color-charcoal);
+    overflow: hidden;
+    clip: rect(0, 900px, 0, 0);
+}
+.glitch[data-text]:hover::before {
+    left: 2px;
+    text-shadow: -1px 0 var(--color-goldenrod);
+    animation: glitch-anim-1 2s infinite alternate-reverse;
+}
+.glitch[data-text]:hover::after {
+    left: -2px;
+    text-shadow: -1px 0 var(--color-peach);
+    animation: glitch-anim-2 2s infinite alternate-reverse;
+}
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+/* Simplified glitch animations for brevity; original comprehensive glitch keyframes are extensive */
+@keyframes glitch-anim-1 {
+    0% { clip: rect(31px, 9999px, 83px, 0); }
+    50% { clip: rect(104px, 9999px, 35px, 0); }
+    100% { clip: rect(69px, 9999px, 143px, 0); }
+}
+@keyframes glitch-anim-2 {
+    0% { clip: rect(119px, 9999px, 80px, 0); }
+    50% { clip: rect(132px, 9999px, 60px, 0); }
+    100% { clip: rect(139px, 9999px, 100px, 0); }
+}
+
+
+/* --- index.html (The Hub) specific styles --- */
+
+.booting {
+    overflow: hidden; /* Hide scrollbar during boot */
+}
+
+.boot-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: var(--color-charcoal);
+    color: var(--color-terminal-green);
+    font-family: var(--font-monospace);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+.boot-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.boot-message p {
+    margin-bottom: 0.5rem;
+    white-space: pre; /* Preserve whitespace */
+    overflow: hidden;
+    animation: typing 1s steps(40, end) forwards;
+    width: 0; /* Start with zero width for typing effect */
+}
+
+.boot-message p:nth-child(2) { animation-delay: 1s; }
+.boot-message p:nth-child(3) { animation-delay: 2s; }
+.boot-message p.blink { animation: typing 1s steps(40, end) forwards 3s, blink-caret 0.75s step-end infinite 3s; border-right: 3px solid transparent; }
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--color-terminal-green); }
+}
+
+.hero-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 5rem); /* Full viewport height minus player dock */
+}
+
+.hero-side {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.it-side {
+    background-color: var(--color-charcoal);
+    border-right: 1px solid var(--color-border-dark);
+}
+
+.music-side {
+    background: linear-gradient(135deg, rgba(26,26,26,1) 0%, rgba(51,51,51,1) 100%);
+}
+
+.hero-text {
+    position: relative;
+    z-index: 2;
+    padding: var(--spacing-unit);
+}
+
+.hero-text h2 {
+    font-size: 2.5rem;
+    color: var(--color-goldenrod);
+    margin-bottom: var(--spacing-unit) * 0.5;
+}
+
+.hero-text p {
+    font-family: var(--font-sans-serif);
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+}
+
+/* Hover Effects */
+.it-side .it-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 255, 0, 0.1); /* Subtle green tint */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+.it-side:hover .it-overlay {
+    opacity: 1;
+    background-image: linear-gradient(rgba(0,255,0,0.1) 1px, transparent 1px);
+    background-size: 100% 3px;
+    animation: scanline-matrix 0.5s infinite linear;
+}
+@keyframes scanline-matrix {
+    from { background-position: 0 0; }
+    to { background-position: 0 100%; }
+}
+
+.music-side .music-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle, var(--color-peach) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 1;
+}
+.music-side:hover .music-overlay {
+    opacity: 0.2;
+}
+
+/* --- systems.html (The Dashboard) specific styles --- */
+
+.dashboard {
+    padding-top: var(--spacing-unit) * 2;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-unit) * 2;
+}
+
+.card {
+    background-color: var(--color-charcoal);
+    border: 1px solid var(--color-border-dark);
+    padding: var(--spacing-unit) * 1.5;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    font-family: var(--font-monospace);
+}
+
+.card h2 {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-unit) * 1.5;
+    color: var(--color-goldenrod);
+    border-bottom: 1px dashed var(--color-border-dark);
+    padding-bottom: var(--spacing-unit) * 0.5;
+}
+
+.resource-monitor .chart-container {
+    margin-bottom: var(--spacing-unit);
+}
+
+.resource-monitor .chart-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-light);
+}
+
+.bar-chart {
+    width: 100%;
+    height: 15px;
+    background-color: var(--color-border-dark);
+    border: 1px solid var(--color-text-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-chart .bar-fill {
+    height: 100%;
+    width: 0%; /* Controlled by JS */
+    background-color: var(--color-terminal-green);
+    transition: width 0.5s ease-out;
+}
+
+.network-monitor .graph-placeholder {
+    width: 100%;
+    height: 100px;
+    background-color: var(--color-border-dark);
+    border: 1px solid var(--color-text-dark);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 0.5rem;
+}
+
+.network-monitor .graph-line {
+    width: 5px;
+    background-color: var(--color-peach);
+    animation: network-pulse 1.5s infinite alternate;
+}
+.network-monitor .graph-line:nth-child(1) { height: 30%; animation-delay: 0s; }
+.network-monitor .graph-line:nth-child(2) { height: 50%; animation-delay: 0.2s; }
+.network-monitor .graph-line:nth-child(3) { height: 40%; animation-delay: 0.4s; }
+/* Add more lines and vary animation-delay for more complex look */
+
+@keyframes network-pulse {
+    0% { transform: scaleY(0.5); opacity: 0.5; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+
+.storage-monitor .storage-block-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 blocks for 4GB */
+    gap: 5px;
+    height: 50px;
+    width: 100%;
+    background-color: var(--color-border-dark);
+    border: 1px solid var(--color-text-dark);
+    padding: 5px;
+}
+
+.storage-monitor .storage-block {
+    background-color: #555;
+    border: 1px solid #444;
+}
+
+.storage-monitor .storage-block.used {
+    background-color: var(--color-peach);
+    box-shadow: 0 0 5px var(--color-peach);
+}
+.storage-monitor .storage-block.available {
+    background-color: var(--color-border-dark);
+}
+
+.system-info p {
+    margin-bottom: 0.5rem;
+    color: var(--color-text-light);
+}
+
+.system-info .monospaced {
+    color: var(--color-terminal-green);
+}
+
+.logs-viewer .log-output {
+    background-color: #000;
+    border: 1px solid var(--color-terminal-green);
+    height: 200px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    color: var(--color-terminal-green);
+}
+
+.logs-viewer .log-output p {
+    margin: 0;
+    white-space: pre-wrap; /* Allow wrapping */
+}
+
+.status-ok {
+    color: var(--color-terminal-green);
+    font-weight: bold;
+}
+
+/* --- music.html (The Listening Room) specific styles --- */
+
+.music-archives {
+    padding-top: var(--spacing-unit) * 2;
+}
+
+.tracklist-container {
+    background-color: #000;
+    border: 1px solid var(--color-goldenrod);
+    font-family: var(--font-monospace);
+    margin-bottom: var(--spacing-unit) * 2;
+}
+
+.tracklist-header, .track-item {
+    display: grid;
+    grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr 1fr 4fr; /* ls -l like columns */
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--color-border-dark);
+    align-items: center;
+}
+
+.tracklist-header {
+    background-color: var(--color-border-dark);
+    color: var(--color-peach);
+    font-weight: bold;
+}
+
+.track-item {
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.track-item:hover {
+    background-color: rgba(218, 165, 32, 0.2); /* Goldenrod transparent */
+}
+
+.track-item.active-track {
+    background-color: var(--color-goldenrod);
+    color: var(--color-charcoal);
+    box-shadow: 0 0 8px var(--color-goldenrod);
+}
+
+.col-name {
+    color: var(--color-terminal-green); /* File name like green */
+}
+
+.visualizer-container {
+    background-color: var(--color-charcoal);
+    border: 1px solid var(--color-border-dark);
+    padding: var(--spacing-unit);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+    margin-bottom: var(--spacing-unit);
+}
+
+.visualizer {
+    display: flex;
+    gap: 3px;
+    height: 100%;
+    align-items: flex-end;
+}
+
+.visualizer .bar {
+    width: 10px; /* Adjust as needed */
+    background-color: var(--color-goldenrod);
+    transition: height 0.1s ease-out; /* Smooth height change */
+    animation: bar-pulse 0.5s infinite alternate; /* Example animation */
+    height: 5px; /* Base height */
+    box-shadow: 0 0 5px var(--color-goldenrod);
+}
+
+.visualizer .bar:nth-child(even) { background-color: var(--color-peach); box-shadow: 0 0 5px var(--color-peach); }
+/* Apply different animation delays for more dynamic effect */
+.visualizer .bar:nth-child(odd) { animation-delay: 0.1s; }
+.visualizer .bar:nth-child(3n) { animation-delay: 0.2s; }
+.visualizer .bar:nth-child(4n) { animation-delay: 0.3s; }
+
+
+@keyframes bar-pulse {
+    0% { height: 5px; }
+    100% { height: 80px; } /* Max height */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: var(--spacing-unit);
+        padding: var(--spacing-unit);
+    }
+    .nav-links {
+        flex-direction: column;
+        gap: var(--spacing-unit) * 0.5;
+    }
+    .hero-split {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    .it-side, .music-side {
+        min-height: 40vh; /* Give some height on mobile */
+    }
+    .it-side {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border-dark);
+    }
+    .cli-window {
+        width: 95%;
+        height: 80%;
+    }
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .player-dock {
+        flex-direction: column;
+        padding: 0.5rem 1rem;
+        gap: 0.5rem;
+    }
+    .player-dock .controls button {
+        font-size: 1.2rem;
+    }
+    .tracklist-header, .track-item {
+        grid-template-columns: 1fr 1fr 1fr; /* Simplified columns for mobile */
+        font-size: 0.8rem;
+    }
+    .tracklist-header .col-user, .tracklist-header .col-group, .tracklist-header .col-size {
+        display: none; /* Hide some columns on mobile */
+    }
+    .track-item .col-user, .track-item .col-group, .track-item .col-size {
+        display: none;
+    }
+}
