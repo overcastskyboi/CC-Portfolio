@@ -1,5 +1,5 @@
 async function updateLiveTelemetry() {
-    const endpoint = 'http://129.80.222.26:3000/metrics';
+    const endpoint = `http://${window.location.hostname}:3000/metrics`;
     const elements = {
         cpu: document.getElementById('cpu-perc'),
         ram: document.getElementById('ram-perc'),
@@ -18,9 +18,9 @@ async function updateLiveTelemetry() {
 
         if(elements.cpu) elements.cpu.innerText = data.cpu + '%';
         if(elements.ram) elements.ram.innerText = data.mem + '%';
-        if(elements.disk) elements.disk.innerText = data.disk.capacity + '%';
-        if(elements.diskFill) elements.diskFill.style.width = data.disk.capacity + '%';
-        if(elements.diskTotal) elements.diskTotal.innerText = data.disk.total;
+        if(elements.disk) elements.disk.innerText = (data.disk.capacity === '0' || data.disk.capacity === 'N/A') ? '—' : data.disk.capacity + '%';
+        if(elements.diskFill) elements.diskFill.style.width = (data.disk.capacity === '0' || data.disk.capacity === 'N/A') ? '0%' : data.disk.capacity + '%';
+        if(elements.diskTotal) elements.diskTotal.innerText = (data.disk.total === 'N/A') ? '—' : data.disk.total;
         
         if(elements.uptime) {
             const h = Math.floor(data.uptime / 3600);

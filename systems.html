@@ -1,115 +1,27 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEC | Systems Intelligence</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEC | Systems Intelligence</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;800&family=Space+Mono&display=swap" rel="stylesheet">
 </head>
 <body class="page-systems">
-    <div class="scanlines"></div>
-    <nav class="navbar">
-        <div class="nav-brand glitch" data-text="CEC_INFRA">CEC_INFRA</div>
-        <ul class="nav-links">
-            <li><a href="index.html">/hub</a></li>
-            <li><a href="systems.html" class="active">/systems</a></li>
-            <li><a href="music.html">/music</a></li>
-            <li><button id="cli-trigger" class="btn-terminal">Terminal_</button></li>
-        </ul>
-    </nav>
-    <main class="dashboard-wrapper container">
-        <header class="dashboard-header">
-            <div class="header-meta">
-                <div id="server-status-container">
-                    <span id="status-dot" class="dot-offline"></span>
-                    <span id="status-text">CONNECTING...</span>
-                </div>
-                <span class="status-indicator online"></span>
-                <h1>SYSTEM_INTELLIGENCE_REPORT</h1>
-            </div>
-            <div class="uptime-counter">UPTIME: <span id="uptime-val">00:00:00</span></div>
-        </header>
-        <div class="grid-container">
-            <div class="grid-card hardware">
-                <div class="card-label">Hardware_Telemetry</div>
-                <div class="telemetry-item">
-                    <div class="bar-meta"><span>CPU_LOAD</span><span id="cpu-perc">0%</span></div>
-                    <div class="progress-bg"><div id="cpu-fill" class="progress-fill"></div></div>
-                </div>
-                <div class="telemetry-item">
-                    <div class="bar-meta"><span>MEM_USAGE</span><span id="ram-perc">0%</span></div>
-                    <div class="progress-bg"><div id="ram-fill" class="progress-fill"></div></div>
-                </div>
-            </div>
-            <div class="grid-card network">
-                <div class="card-label">Network_Optimization</div>
-                <div class="bbr-status">
-                    <div class="status-box"><span class="label">ALGORITHM</span><span class="value">TCP_BBR</span></div>
-                    <div class="status-box"><span class="label">CONGESTION</span><span class="value status-ok">MINIMAL</span></div>
-                </div>
-                <div class="network-graph" id="net-graph"></div>
-            </div>
-            <div class="grid-card disk">
-                <div class="card-label">Disk_Telemetry</div>
-                <div class="telemetry-item">
-                    <div class="bar-meta"><span>DISK_USAGE</span><span id="disk-perc">0%</span></div>
-                    <div class="progress-bg"><div id="disk-fill" class="progress-fill"></div></div>
-                </div>
-                <p>Total: <span id="disk-total">0GB</span></p>
-            </div>
-            <div class="grid-card storage">
-                <div class="card-label">Virtual_Memory</div>
-                <div class="swap-visual">
-                    <div class="swap-info"><h3>4GB_SWAP_FILE</h3><p>High-speed overflow active.</p></div>
-                    <div class="status-light solid"></div>
-                </div>
-            </div>
-            <div class="grid-card logs">
-                <div class="card-label">Access_Logs (tail -f)</div>
-                <div class="log-console" id="log-stream"></div>
-            </div>
-        </div>
-    </main>
-    <div id="cli-overlay" class="cli-overlay hidden">
-        <div class="cli-window">
-            <div id="cli-output" class="cli-output"></div>
-            <div class="cli-input-wrapper">
-                <span class="prompt">opc@cec:~$</span>
-                <input type="text" id="cli-input" autocomplete="off" spellcheck="false">
-            </div>
-        </div>
-    </div>
-    <footer class="player-console">
-        <div class="player-inner container">
-            <div class="now-playing">
-                <div class="mini-visualizer" id="mini-viz"><span></span><span></span><span></span><span></span></div>
-                <div class="track-meta">
-                    <span id="player-track-title">No Track Selected</span>
-                    <span id="player-artist">Colin Elliott Cherry</span>
-                </div>
-            </div>
-            <div class="player-controls">
-                <button id="prev-btn">⏮</button>
-                <button id="play-btn" class="play-trigger">▶</button>
-                <button id="next-btn">⏭</button>
-                <div class="scrub-container">
-                    <span class="time" id="current-time">0:00</span>
-                    <input type="range" id="progress-bar" min="0" max="100" value="0">
-                    <span class="time" id="duration">0:00</span>
-                </div>
-            </div>
-            <div class="volume-box">
-                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.7">
-            </div>
-        </div>
-    </footer>
-    <audio id="main-audio"></audio>
-    <script src="assets/js/app.js"></script>
-    <footer style="text-align: center; padding: 20px; opacity: 0.6; font-size: 0.8rem;">
-        <p>System Status: Active | Last Infrastructure Sync: <span id="deploy-time">February 15, 2026 @ 12:06:57</span></p>
-    </footer>
+<nav class="navbar"><div class="nav-brand">CEC_INFRA</div><ul class="nav-links"><li><a href="index.html">/hub</a></li><li><a href="systems.html" class="active">/systems</a></li><li><a href="music.html">/music</a></li><li><button id="cli-trigger" class="btn-terminal">Terminal_</button></li></ul></nav>
+<main class="dashboard-wrapper container">
+<header class="dashboard-header"><div class="header-meta"><div id="server-status-container"><span id="status-dot" class="dot-offline"></span><span id="status-text">CONNECTING...</span></div><h1>SYSTEM_INTELLIGENCE</h1></div><div class="uptime-counter">UPTIME: <span id="uptime-val">00:00:00</span></div></header>
+<div class="modern-grid">
+<div class="minimal-module"><div class="module-label">Hardware_Telemetry</div><div class="telemetry-row"><div class="row-meta"><span>CPU_LOAD</span><span id="cpu-perc">0%</span></div><div class="slim-bar"><div id="cpu-fill" class="fill"></div></div></div><div class="telemetry-row"><div class="row-meta"><span>MEM_USAGE</span><span id="ram-perc">0%</span></div><div class="slim-bar"><div id="ram-fill" class="fill"></div></div></div></div>
+<div class="minimal-module"><div class="module-label">Network_State</div><div class="bbr-display"><div class="data-point"><span class="label">ALGO</span><span class="value">TCP_BBR</span></div><div class="data-point"><span class="label">LOAD</span><span class="value status-ok">OPTIMAL</span></div></div></div>
+<div class="minimal-module"><div class="module-label">Disk_Architecture</div><div class="telemetry-row"><div class="row-meta"><span>CAPACITY</span><span id="disk-perc">0%</span></div><div class="slim-bar"><div id="disk-fill" class="fill"></div></div></div><div class="disk-meta">VOL_TOTAL: <span id="disk-total">0GB</span></div></div>
+<div class="minimal-module logs-full"><div class="module-label">Live_Events</div><div class="log-viewport" id="log-stream"></div></div>
+</div>
+</main>
+<footer class="player-console floating"><div class="player-inner container"><div class="now-playing"><div class="track-meta"><span id="player-track-title">No Track Selected</span><span id="player-artist">Colin Elliott Cherry</span></div></div><div class="player-controls"><button id="prev-btn">⏮</button><button id="play-btn">▶</button><button id="next-btn">⏭</button><div class="scrub-container"><input type="range" id="progress-bar" min="0" max="100" value="0"></div></div><div class="volume-box"><input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.7"></div></div></footer>
+<div id="cli-overlay" class="cli-overlay hidden"><div class="cli-window"><div id="cli-output" class="cli-output"></div><div class="cli-input-wrapper"><span class="prompt">opc @cec:~$</span><input type="text" id="cli-input" autocomplete="off" spellcheck="false"></div></div></div>
+<audio id="main-audio"></audio>
+<script src="assets/js/app.js"></script>
 </body>
 </html>
