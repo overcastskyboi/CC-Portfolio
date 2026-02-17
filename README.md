@@ -1,58 +1,85 @@
-# OCI Project: Full-Stack Portfolio & Telemetry Infrastructure
+# CherryOS 2.0
 
-This document outlines the architecture, deployment, and optimization of an Oracle Cloud Infrastructure (OCI) Always Free instance, serving a dual-identity portfolio site with real-time telemetry.
+CherryOS 2.0 is a React + Tailwind powered, desktop-style portfolio experience that mimics a lightweight operating system environment in the browser.
 
-## Architecture Overview
+## Features
 
-**Host:** OCI Compute Instance (IP: 129.80.222.26)
-*   **Shape:** Ampere A1.Flex (ARM) - 4 OCPU, 24 GB RAM
-*   **Operating System:** Oracle Linux 9
-*   **Disk:** 83GB Boot Volume partition expansion, with a 4GB Swap File for stability.
+- Boot sequence and lock screen flow
+- Desktop with launchable app icons
+- Draggable, focusable, minimizable windows
+- Taskbar/mobile dock with active apps and clock
+- Built-in portfolio apps:
+  - **My Songs** (music player shell with lyrics + transport UI)
+  - **Watch Log** (anime/manga catalogue with filtering)
+  - **Game Center** (gaming profile dashboard)
+  - **Studio Rack** (music production plugin inventory)
+  - **Terminal** (interactive fake shell commands)
 
-**Orchestration:** Docker Compose (v2)
-*   Manages a multi-container stack for backend services.
+## Tech Stack
 
-**Dual-Container Stack:**
-1.  **CEC Metrics API (`cec-metrics-api`):**
-    *   Node.js backend, mapping host `/proc` and `/sys` for kernel-level telemetry (CPU, RAM, Disk Usage, Uptime, Load).
-    *   Exposes metrics via REST API on Port 3000.
-    *   **Robustness:** Improved error handling for `df` command execution and more robust parsing of disk metrics.
-2.  **Portainer (`portainer-console`):
-    *   Visual container management console on Port 9000.
+- **React 18**
+- **Vite 5**
+- **Tailwind CSS 3**
+- **lucide-react** icons
 
-**Frontend:**
-*   Multi-page "Dual-Boot" portfolio (`S:\Oracle Cloud\Portfolio_Site`) served via Nginx.
-*   `app.js` handles:
-    *   **Real-time Telemetry:** Polls the CEC Metrics API (now `https://129.80.222.26:3000/metrics`) for live hardware metrics and "Server Live" status. Disk metrics display gracefully handles unavailable or zero values.
-    *   **Music Player:** Integrates a functional music player that streams audio files from the OCI Node.js API (`https://129.80.222.26:3000/stream/`).
-*   **Client-Side Scripting:** Vanilla JavaScript for dynamic interactions.
+## Project Structure
 
-## Security & Network Hardening
+```text
+CC_Portfolio/
+├── public/                      # Static public assets (placeholders for media/images)
+├── src/
+│   ├── App.jsx                  # CherryOS app shell + all app windows
+│   ├── main.jsx                 # React bootstrap entry
+│   └── styles.css               # Tailwind directives + global utility styles
+├── index.html                   # Vite host HTML
+├── package.json                 # Scripts + dependencies
+├── postcss.config.js            # Tailwind/PostCSS wiring
+├── tailwind.config.js           # Tailwind content config
+└── vite.config.js               # Vite React configuration
+```
 
-*   **Firewall:** Linux `firewalld` configured on the instance.
-*   **OCI Network Security Lists (Stateful Ingress Rules):**
-    *   **Port 22 (SSH):** Locked down to `99.73.115.55/32` (or your specific IP) for secure remote access.
-    *   **Port 3000 (Metrics API):** Open to `0.0.0.0/0` to allow public frontend access.
-    *   **Port 9000 (Portainer):** Locked down to `0.0.0.0/0` (or your specific IP) for management console access.
-*   **IP Persistence:** Configured with a Reserved Public IP to ensure the portfolio URL remains stable across instance reboots.
+## Getting Started
 
-## Always Free Optimization & Reclamation Protection
+### 1) Install dependencies
 
-*   **Full Resource Utilization:** Instance scaled to utilize the full 4 OCPU / 24 GB RAM Always Free allocation.
-*   **"Never-Idle" Script (`never_idle.sh`):**
-    *   A `crontab` job that periodically generates ~25% CPU load and minimal network traffic.
-    *   Ensures CPU/Network utilization remains above Oracle's 20% reclamation threshold, preventing idle resource reclamation.
+```bash
+npm install
+```
 
-## Deployment Strategy
+### 2) Run locally
 
-*   **Local Development:** All source code maintained in `S:\Oracle Cloud\Portfolio_Site`.
-*   **OCI Deployment:** Automated `deploy.ps1` script (v3.1 - "Self-Updating" Super-Deploy) pushes frontend (HTML, CSS, JS) changes to the OCI Nginx web root.
-*   **Media Hosting:** Large media files (music, covers) are *not* tracked by GitHub and are instead served directly by the OCI Node.js API from a dedicated 'music' directory on the OCI instance.
-*   **GitHub Integration:** Code pushed to `https://github.com/overcastskyboi/CC-Portfolio` for version control and GitHub Pages hosting, with auto-commit timestamping.
+```bash
+npm run dev
+```
 
----
+Open the URL shown by Vite (usually `http://localhost:5173`).
 
-## Important Considerations & Known Issues
+### 3) Build production bundle
 
-*   **Mixed Content / HTTPS Certificate Warnings:** The Frontend (hosted on HTTPS GitHub Pages) attempts to connect to the OCI Node.js API (telemetry and media streaming) over HTTPS directly to an IP address (e.g., `https://129.80.222.26:3000/...`). This configuration often leads to browser warnings or errors related to untrusted SSL certificates, as HTTPS with raw IP addresses is typically not trusted without a proper domain and server-side SSL configuration. This does not prevent functionality but may present security warnings to users.
-*   **OCI Media Setup:** For the music player to function, the 'music' directory on the OCI instance (within `/home/opc/docker/telemetry/`) must exist and contain the actual media files (e.g., `.mp3`, `.webp` covers).
+```bash
+npm run build
+```
+
+### 4) Preview production build
+
+```bash
+npm run preview
+```
+
+## Placeholder Dependencies / Content
+
+CherryOS 2.0 is fully functional without external APIs. A few elements are intentionally placeholder-driven so the branch remains portable:
+
+- Music player track/audio state is UI-only (no streaming backend required).
+- Anime/manga and gaming stats are static local data objects.
+- Background image on lock screen uses a public URL; swap with local assets in `public/` for offline deployments.
+
+## Customization
+
+- Update desktop apps and content in `src/App.jsx`.
+- Add real API integrations by replacing static data constants.
+- Add custom artwork/audio in `public/` and wire into app components.
+
+## Notes
+
+This branch intentionally preserves legacy static files (`assets/`, `music.html`, `systems.html`) for reference while introducing a complete CherryOS 2.0 React application as the primary runnable site.
