@@ -3,6 +3,19 @@ import { Clapperboard, ArrowLeft, RefreshCcw, Star, AlertCircle, Search } from '
 import { useNavigate } from 'react-router-dom';
 import LazyImage from '../components/LazyImage';
 import { ANIME_DATA } from '../data/constants';
+import ANIME_COVERS from '../data/anime_covers.json'; // Import anime covers
+
+const WatchLogApp = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(ANIME_DATA.catalogue); // Default to local data
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Map for quick cover image lookup
+  const animeCoversMap = useMemo(() => {
+    return new Map(ANIME_COVERS.map(cover => [cover.title, cover.coverImage]));
+  }, []);
 
 const WatchLogApp = () => {
   const navigate = useNavigate();
@@ -25,7 +38,13 @@ const WatchLogApp = () => {
       if (!response.ok) throw new Error("Connection failed");
       const json = await response.json();
       if (json.data && Array.isArray(json.data)) {
-        setData(json.data);
+        // Ensure coverImage is pulled if available, otherwise use local fallback logic later
+        const processedData = json.data.map(item => ({
+          ...item,
+          // API might provide coverImage, if not, it will be handled by MediaCard's fallback
+          coverImage: item.coverImage || animeCoversMap.get(item.title) || undefined
+        }));
+        setData(processedData);
       }
     } catch (err) {
       console.error("Fetch error:", err);
@@ -58,7 +77,7 @@ const WatchLogApp = () => {
     <div className="group relative bg-gray-900/40 border border-white/5 rounded-2xl overflow-hidden hover:border-yellow-500/30 transition-all hover:-translate-y-1 shadow-2xl">
       <div className="aspect-[2/3] relative">
         <LazyImage 
-          src={item.coverImage || 'https://via.placeholder.com/300x450?text=No+Image'} 
+          src={item.coverImage || animeCoversMap.get(item.title) || 'https://via.placeholder.com/300x450?text=No+Image'} 
           alt={item.title}
           className="w-full h-full object-cover"
         />

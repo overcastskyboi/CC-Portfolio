@@ -7,7 +7,6 @@ export const MediaSchema = z.object({
   score: z.number().min(0).max(10).optional(),
   progress: z.string().optional(),
   status: z.enum(['Reading', 'Watching', 'Completed', 'Plan to Watch', 'Paused', 'Dropped']),
-  coverImage: z.string().url().optional(),
   updatedAt: z.string().optional(),
 });
 
@@ -37,3 +36,11 @@ export const AlbumSchema = z.object({
 });
 
 export const MusicManifestSchema = z.array(AlbumSchema);
+
+export const CoverSchema = z.object({
+  title: z.string(),
+  coverImage: z.string().url(),
+});
+
+export const AnimeCoversSchema = z.array(CoverSchema);
+export const GameCoversSchema = z.array(CoverSchema);
