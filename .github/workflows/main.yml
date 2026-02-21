@@ -2,6 +2,8 @@ name: CherryOS Lifecycle
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [ "main" ]
   release:
     types: [created]
 
@@ -10,21 +12,30 @@ permissions:
   packages: write
   pages: write
   id-token: write
+  pull-requests: read
 
 jobs:
+  validate-conventions:
+    name: Validate Naming Conventions
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check Commit Messages
+        uses: wagoid/commitlint-github-action@v6
+
   quality-gate:
     name: Lint & Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      matrix:
-        node-version: [20.x]
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: 'npm'
       - run: npm ci
       - name: Static Analysis (Lint)
