@@ -98,6 +98,7 @@ jobs:
       - run: npm ci
       - name: Build
         run: npm run build
+      # npm publish uses repo secret NPM_TOKEN (Settings → Secrets → Actions)
       - name: Publish to NPM
         run: npm publish --access public
         env:

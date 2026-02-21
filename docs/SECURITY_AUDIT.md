@@ -38,7 +38,7 @@ This document describes security best practices applied to CherryOS, common vuln
 
 - Strict CSP is recommended for production. Example (tune for your host):
 
-  ```
+  ```text
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; base-uri 'self'; form-action 'self'
   ```
 
@@ -60,6 +60,32 @@ This document describes security best practices applied to CherryOS, common vuln
 ## Reporting a Vulnerability
 
 See [SECURITY.md](../SECURITY.md) for supported versions and how to report vulnerabilities.
+
+## Static Audit: TerminalApp.jsx & OSContext.jsx
+
+### TerminalApp.jsx
+
+| Risk | Finding | Remediation |
+|------|--------|-------------|
+| **XSS** | Command output and user `input` are rendered as text via `{line}` in JSX. React escapes by default, so no HTML/script injection. | **No code change required.** Do not introduce `dangerouslySetInnerHTML` for terminal output. If rich output is ever needed, use a sanitizer (e.g. DOMPurify) and allow only safe tags. |
+| **Input abuse** | Unbounded input can grow history and memory. | **Implemented:** Input capped at 256 chars; control characters stripped before processing. |
+| **Telemetry injection** | `telemetry.cpu`, `telemetry.mem`, `telemetry.uptime` are interpolated into a string and rendered as text. If the API returned malicious content, React would still escape. | **Defense in depth:** Validate telemetry shape and types before use; treat as display-only. |
+| **External request** | Fetch to `https://129.80.222.26:3000/metrics/` — hardcoded IP, mixed content possible in some hosts. | Prefer env-based URL (`import.meta.env.VITE_TELEMETRY_URL`), HTTPS only, and CORS configured on the endpoint. |
+
+### OSContext.jsx
+
+| Risk | Finding | Remediation |
+|------|--------|-------------|
+| **State injection** | `openWindow(appId, component, title, icon, initialProps)` — `title` and `initialProps` are rendered in `WindowFrame` as text / passed to app components. Titles are currently hardcoded in Desktop. | **Policy:** Never pass user-controlled or unsanitized strings as `title` or into `initialProps` if they are ever rendered as HTML elsewhere. Document for future plugins. |
+| **XSS** | `win.title` is rendered in `<span>{win.title}</span>`; React escapes. | No change; keep rendering as text only. |
+
+### Remediation Plan (CVEs / Insecure Patterns)
+
+1. **TerminalApp:** Input sanitization (max length + strip control chars) — **done below.**  
+2. **TerminalApp:** Validate telemetry: ensure `cpu`/`mem` are numbers, `uptime` is number; otherwise show "unavailable."  
+3. **TerminalApp:** Move telemetry URL to env (e.g. `VITE_TELEMETRY_URL`); default to empty to disable.  
+4. **OSContext:** No code change; document in ARCHITECTURE/API that `title` and `initialProps` must be trusted or sanitized.  
+5. **Project:** Continue to avoid `eval`, `new Function`, and `dangerouslySetInnerHTML` for user or external data.
 
 ## Updates
 

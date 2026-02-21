@@ -12,6 +12,7 @@ Welcome to the comprehensive documentation for CherryOS, a React-based web appli
 ### Technical Documentation
 - [ARCHITECTURE.md](ARCHITECTURE.md) - Detailed system architecture and design patterns
 - [API_REFERENCE.md](API_REFERENCE.md) - Component, hook, and utility documentation
+- [ROADMAP.md](ROADMAP.md) - Future plans, versioning, and changelog
 - [STRATEGIC_PLAN.md](STRATEGIC_PLAN.md) - Long-term enhancement roadmap and specifications
 
 ### Development Process

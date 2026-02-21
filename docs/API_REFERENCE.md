@@ -1,6 +1,18 @@
 # CherryOS API Reference
 
-This document provides detailed information about the components, hooks, and utilities available in CherryOS.
+This document provides detailed information about the components, hooks, and utilities available in CherryOS (React 19 + Vite 7 + Tailwind 4, modular layout under `src/`).
+
+## Source Layout
+
+| Path | Contents |
+|------|----------|
+| **`src/apps/`** | Application modules: `TerminalApp.jsx`, `MySongsApp.jsx`, `WatchLogApp.jsx`, `GameCenterApp.jsx`, `StudioRackApp.jsx`. Each is loaded via `React.lazy()` from `Desktop.jsx`. |
+| **`src/components/`** | Shell UI: `BootScreen.jsx`, `LockScreen.jsx`, `Desktop.jsx`, `DesktopIcon.jsx`, `WindowFrame.jsx`, `Taskbar.jsx`, `MobileNav.jsx`. |
+| **`src/context/`** | `OSContext.jsx` — global OS state and window management. |
+| **`src/hooks/`** | `useOSHooks.js` — e.g. `useDraggable`, `useTime`. |
+| **`src/data/`** | Static data (constants, plugin lists, etc.). |
+
+**File renames (2.0.0 refactor):** App components were moved from the monolith into `src/apps/`; shell components remain in `src/components/`. The `APPS` array and lazy imports live in `src/components/Desktop.jsx`.
 
 ## Table of Contents
 
@@ -9,6 +21,7 @@ This document provides detailed information about the components, hooks, and uti
 3. [Context Providers](#context-providers)
 4. [Utilities](#utilities)
 5. [Constants](#constants)
+6. [Application Components](#application-components)
 
 ## Components
 
@@ -17,9 +30,11 @@ This document provides detailed information about the components, hooks, and uti
 The main context provider that manages the entire OS state.
 
 **Props:**
+
 - `children` (ReactNode): Child components to wrap with the provider
 
 **Context Value:**
+
 ```javascript
 {
   bootState: string,        // 'off', 'locked', 'desktop'
@@ -39,6 +54,7 @@ The main context provider that manages the entire OS state.
 Component that renders a draggable, resizable window.
 
 **Props:**
+
 - `window` (object): Window configuration object
   - `id` (string): Unique identifier
   - `component` (React.Component): Component to render inside the window
@@ -54,6 +70,7 @@ Component that renders a draggable, resizable window.
 Component for desktop application icons.
 
 **Props:**
+
 - `icon` (React.Component): Icon component to display
 - `label` (string): Text label for the icon
 - `onClick` (function): Function to call when clicked
@@ -63,6 +80,7 @@ Component for desktop application icons.
 System taskbar component that shows running applications and system information.
 
 **Props:**
+
 None
 
 ### LockScreen
@@ -70,14 +88,15 @@ None
 Lock screen component that appears when the OS is locked.
 
 **Props:**
+
 None
 
 ### BootScreen
 
 Boot screen component that appears during OS initialization.
 
-**Props:**
-None
+**Location:** `src/components/BootScreen.jsx`  
+**Props:** None
 
 ## Hooks
 
@@ -86,9 +105,11 @@ None
 Hook for adding draggable functionality to components.
 
 **Parameters:**
+
 - `initialPosition` (object): Initial position {x, y}
 
 **Returns:**
+
 ```javascript
 {
   position: {x, y},        // Current position
@@ -101,6 +122,7 @@ Hook for adding draggable functionality to components.
 Hook for getting the current time that updates every second.
 
 **Returns:**
+
 - `Date`: Current date and time
 
 ### useOS
@@ -108,6 +130,7 @@ Hook for getting the current time that updates every second.
 Hook for accessing the OS context.
 
 **Returns:**
+
 - OS context value (see OSProvider context value above)
 
 ## Context Providers
@@ -180,54 +203,51 @@ Array of track information for the music player.
 
 ## Application Components
 
+All app components live under **`src/apps/`** and are registered in the `APPS` array in `src/components/Desktop.jsx`, loaded via `React.lazy()`.
+
 ### TerminalApp
 
-Interactive terminal application component.
-
-**Props:**
-None
+**Location:** `src/apps/TerminalApp.jsx`  
+Interactive terminal: built-in commands (help, whoami, ls, clear, reboot, telemetry). User input is sanitized (max length, control chars); telemetry URL is `VITE_TELEMETRY_URL` (optional).  
+**Props:** None
 
 ### MySongsApp
 
-Music player application component.
-
-**Props:**
-None
+**Location:** `src/apps/MySongsApp.jsx`  
+Music player application.  
+**Props:** None
 
 ### WatchLogApp
 
-Media catalog application component.
-
-**Props:**
-None
+**Location:** `src/apps/WatchLogApp.jsx`  
+Media catalog application.  
+**Props:** None
 
 ### GameCenterApp
 
-Gaming profile application component.
-
-**Props:**
-None
+**Location:** `src/apps/GameCenterApp.jsx`  
+Gaming profile application.  
+**Props:** None
 
 ### StudioRackApp
 
-Audio plugin inventory application component.
-
-**Props:**
-None
+**Location:** `src/apps/StudioRackApp.jsx`  
+Audio plugin inventory application.  
+**Props:** None
 
 ## Constants
 
 ### APPS
 
-Array of available applications with their metadata.
+Defined in **`src/components/Desktop.jsx`** (not a separate file). Array of available applications with their metadata; each `component` is a lazy-loaded module from `src/apps/`.
 
 ```javascript
 [
   {
-    id: string,
-    title: string,
+    id: string,        // e.g. 'term', 'songs', 'watch', 'games', 'studio'
+    title: string,      // Display name
     icon: React.Component,
-    component: React.Component
+    component: React.Component  // Lazy-loaded from src/apps/
   },
   ...
 ]
@@ -237,23 +257,23 @@ Array of available applications with their metadata.
 
 To customize CherryOS, you can:
 
-1. Modify the data constants (VST_LIST, ANIME_DATA, GAMING_DATA, TRACKS)
-2. Add new applications by creating components and adding them to APPS
-3. Customize styling through Tailwind CSS classes
-4. Extend functionality by adding new hooks or modifying existing ones
+1. Modify the data in `src/data/` (e.g. constants, plugin lists).
+2. Add new applications: create a component in **`src/apps/`**, then in **`src/components/Desktop.jsx`** add a `lazy(() => import('../apps/YourApp'))` and an entry in the `APPS` array.
+3. Customize styling through Tailwind CSS 4 classes.
+4. Extend functionality via `src/hooks/` or `src/context/OSContext.jsx`.
 
 ## Extending Applications
 
 To add a new application:
 
-1. Create a new component for your application
-2. Add it to the APPS array in the Desktop component
-3. Ensure it follows the same pattern as existing applications
-4. Test thoroughly across different screen sizes
+1. Create **`src/apps/YourAppName.jsx`** (same pattern as existing apps).
+2. In **`src/components/Desktop.jsx`**: add `const YourAppName = lazy(() => import('../apps/YourAppName'));` and an object in `APPS` with `id`, `title`, `icon`, and `component: YourAppName`.
+3. Ensure the component works in both desktop and mobile (WindowFrame adapts).
+4. Run unit and E2E tests (`npm test`, `npm run test:e2e`).
 
 ## Performance Considerations
 
-- Use React.memo for components that render frequently
-- Implement useCallback for event handlers passed to child components
-- Consider code splitting for larger applications
-- Optimize re-renders by memoizing expensive calculations
+- DesktopIcon and WindowFrame use `React.memo`.
+- All apps are code-split via `React.lazy()` in Desktop; each window is wrapped in `Suspense` with a skeleton fallback.
+- LCP target &lt; 2.0s; see `src/test/e2e/performance.spec.js`.
+- Use `useCallback` for handlers passed to children where needed; memoize expensive computations.

@@ -17,11 +17,32 @@ body,
   box-sizing: border-box;
 }
 
+/* Hide scrollbar: -webkit for Safari/Chrome; scrollbar-width for Firefox (when supported) */
 .scrollbar-hide {
   -ms-overflow-style: none;
-  scrollbar-width: none;
+}
+
+@supports (scrollbar-width: none) {
+  .scrollbar-hide {
+    scrollbar-width: none;
+  }
 }
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Cross-browser: touch targets and tap highlight (Chromium, Firefox, WebKit) */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

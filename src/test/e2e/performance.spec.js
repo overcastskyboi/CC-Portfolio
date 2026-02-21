@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
 
-// Industry-standard targets: LCP < 2.5s, DOM Content Loaded < 2s (Core Web Vitals–aligned)
+// Target: LCP < 2.0s, DOM Content Loaded < 2s (Core Web Vitals–aligned).
+// Shell (BootScreen, LockScreen, Desktop) loads synchronously; app windows use
+// React.lazy + Suspense with a minimal skeleton fallback to avoid blocking LCP.
 const DOM_CONTENT_LOADED_MS = 2000;
-const LCP_MS = 2500;
+const LCP_MS = 2000;
 
 test('performance benchmark', async ({ page }) => {
   const navigateStart = Date.now();

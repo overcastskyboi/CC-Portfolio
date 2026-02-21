@@ -26,11 +26,13 @@ Before deploying CherryOS, ensure you have:
 To run CherryOS locally for development:
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -44,6 +46,7 @@ The development server includes hot reloading and applies security headers (X-Co
 To create an optimized production build:
 
 1. Run the build command:
+
    ```bash
    npm run build
    ```
@@ -51,6 +54,7 @@ To create an optimized production build:
 2. The built files will be in the `dist/` directory
 
 3. To preview the production build locally:
+
    ```bash
    npm run preview
    ```
@@ -71,6 +75,7 @@ The production build is configured through `vite.config.js` and includes:
 CherryOS can be deployed to any static hosting service:
 
 1. Build the project:
+
    ```bash
    npm run build
    ```
@@ -78,6 +83,7 @@ CherryOS can be deployed to any static hosting service:
 2. Upload the contents of the `dist/` directory to your hosting provider
 
 Popular static hosting options include:
+
 - GitHub Pages
 - Netlify
 - Vercel
@@ -89,6 +95,7 @@ Popular static hosting options include:
 For server-based deployments:
 
 1. Build the project:
+
    ```bash
    npm run build
    ```
@@ -104,16 +111,19 @@ For server-based deployments:
 To deploy using Docker:
 
 1. Build the Docker image:
+
    ```bash
    docker build -t cherryos .
    ```
 
 2. Run the container:
+
    ```bash
    docker run -p 8080:80 cherryos
    ```
 
 Example Dockerfile:
+
 ```dockerfile
 FROM node:16 AS build
 WORKDIR /app
@@ -133,12 +143,14 @@ CMD ["nginx", "-g", "daemon off;"]
 CherryOS supports environment variables for configuration:
 
 ### Development (.env.local)
+
 ```bash
 VITE_API_URL=https://api.example.com
 VITE_APP_TITLE=CherryOS Development
 ```
 
 ### Production (.env.production)
+
 ```bash
 VITE_API_URL=https://api.prod.example.com
 VITE_APP_TITLE=CherryOS
@@ -219,6 +231,7 @@ For production error tracking:
 - Custom error logging solution
 
 Implementation example:
+
 ```javascript
 // In your main.jsx
 if (import.meta.env.PROD) {
@@ -239,17 +252,20 @@ To add analytics:
 Regular maintenance tasks:
 
 1. Update dependencies:
+
    ```bash
    npm outdated
    npm update
    ```
 
 2. Check for security vulnerabilities:
+
    ```bash
    npm audit
    ```
 
 3. Test after updates:
+
    ```bash
    npm run test
    npm run build
@@ -314,7 +330,7 @@ Deployment security best practices:
 
 For additional help with deployment:
 
-- Vite documentation: https://vitejs.dev/
-- React documentation: https://reactjs.org/
-- Tailwind CSS documentation: https://tailwindcss.com/
+- [Vite documentation](https://vitejs.dev/)
+- [React documentation](https://reactjs.org/)
+- [Tailwind CSS documentation](https://tailwindcss.com/)
 - Community forums and Stack Overflow

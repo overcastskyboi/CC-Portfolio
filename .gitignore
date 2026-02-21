@@ -21,6 +21,7 @@ test-results/
 .env.production.local
 
 # misc
+deployment_trigger.txt
 .DS_Store
 *.log
 *.tmp

@@ -8,21 +8,22 @@ This document outlines the testing procedures and protocols for ensuring the qua
 - **E2E tests:** Playwright — `npm run test:e2e`. Covers Chromium, Firefox, WebKit, and mobile viewports (Pixel 5, iPhone 12).
 - **Lint:** ESLint 9 — `npm run lint`.
 - **CI:** On every push to `main`, the workflow runs lint, unit tests, dependency audit, E2E (all browsers/devices), then deploys to GitHub Pages. See [.github/workflows/main.yml](../.github/workflows/main.yml).
-- **Performance:** E2E performance test enforces DOM Content Loaded &lt; 2s and LCP &lt; 2.5s (Core Web Vitals–aligned). See `src/test/e2e/performance.spec.js`.
+- **Performance:** E2E performance test enforces DOM Content Loaded &lt; 2s and LCP &lt; 2.0s (Core Web Vitals–aligned). See `src/test/e2e/performance.spec.js`.
 - **Security:** Headers in dev/preview; dependency audit in CI; see [SECURITY_AUDIT.md](SECURITY_AUDIT.md).
 
 ## Table of Contents
 
-1. [Testing Strategy](#testing-strategy)
-2. [Unit Testing](#unit-testing)
-3. [Component Testing](#component-testing)
-4. [Integration Testing](#integration-testing)
-5. [End-to-End Testing](#end-to-end-testing)
-6. [Cross-Browser Testing](#cross-browser-testing)
-7. [Performance Testing](#performance-testing)
-8. [Accessibility Testing](#accessibility-testing)
-9. [Security Testing](#security-testing)
-10. [Continuous Integration](#continuous-integration)
+1. [Current Implementation](#current-implementation-quick-reference)
+2. [Testing Strategy](#testing-strategy)
+3. [Unit Testing](#unit-testing)
+4. [Component Testing](#component-testing)
+5. [Integration Testing](#integration-testing)
+6. [End-to-End Testing](#end-to-end-testing)
+7. [Cross-Browser and Device Testing](#cross-browser-and-device-testing)
+8. [Performance Testing](#performance-testing)
+9. [Accessibility Testing](#accessibility-testing)
+10. [Security Testing](#security-testing)
+11. [Continuous Integration](#continuous-integration)
 
 ## Testing Strategy
 
@@ -38,9 +39,10 @@ CherryOS follows a layered testing approach:
 
 Unit tests focus on pure functions, utilities, and helper functions.
 
-### Setup
+### Unit Test Setup
 
 Install testing dependencies:
+
 ```bash
 npm install --save-dev jest @testing-library/react @testing-library/jest-dom
 ```
@@ -76,11 +78,13 @@ npm test
 ```
 
 Or for continuous testing:
+
 ```bash
 npm test -- --watch
 ```
 
 Coverage:
+
 ```bash
 npm run test:coverage
 ```
@@ -89,9 +93,10 @@ npm run test:coverage
 
 Component tests verify that individual React components render correctly and handle user interactions.
 
-### Setup
+### Component Test Setup
 
 Using React Testing Library:
+
 ```bash
 npm install --save-dev @testing-library/react @testing-library/user-event
 ```
@@ -304,9 +309,10 @@ Implemented in `src/test/e2e/performance.spec.js`.
 
 Ensure CherryOS is accessible to all users.
 
-### Automated Testing
+### Automated Accessibility Testing
 
 Using axe-core with Jest:
+
 ```bash
 npm install --save-dev axe-core jest-axe
 ```
@@ -334,6 +340,7 @@ test('should have no accessibility violations', async () => {
 ### WCAG Compliance
 
 Target WCAG 2.1 Level AA compliance:
+
 - Perceivable
 - Operable
 - Understandable
@@ -367,7 +374,7 @@ The **CherryOS Lifecycle** workflow (`.github/workflows/main.yml`) runs on every
 
 Run `npm run test:coverage` for Vitest coverage. Set or adjust thresholds in `vitest.config.js` if required.
 
-## Test Reporting
+## Test Reporting and Maintenance
 
 Generate comprehensive test reports.
 
@@ -384,7 +391,7 @@ Generate comprehensive test reports.
 - Show performance metrics
 - Highlight flaky tests
 
-## Maintenance and Updates
+### Maintenance and Updates
 
 Regular testing maintenance:
 
