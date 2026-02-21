@@ -7,6 +7,7 @@ export const MediaSchema = z.object({
   score: z.number().min(0).max(10).optional(),
   progress: z.string().optional(),
   status: z.enum(['Reading', 'Watching', 'Completed', 'Plan to Watch', 'Paused', 'Dropped']),
+  coverImage: z.string().url().optional(),
   updatedAt: z.string().optional(),
 });
 

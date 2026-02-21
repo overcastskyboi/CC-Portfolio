@@ -3,25 +3,6 @@ import { Gamepad2, ArrowLeft, RefreshCcw, Star, AlertCircle, Search, Trophy, Mon
 import { useNavigate } from 'react-router-dom';
 import LazyImage from '../components/LazyImage';
 import { GAMING_DATA } from '../data/constants';
-import GAME_COVERS from '../data/game_covers.json'; // Import game covers
-
-const GameCenterApp = () => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState(GAMING_DATA.collection);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const stats = [
-    { label: 'Steam Level', value: GAMING_DATA.steam.level, icon: <Gamepad2 size={16} /> },
-    { label: 'HC Points', value: GAMING_DATA.retro.hardcorePoints, icon: <Trophy size={16} /> },
-    { label: 'Library Size', value: GAMING_DATA.steam.gamesCount, icon: <Monitor size={16} /> },
-  ];
-
-  // Map for quick cover image lookup
-  const gameCoversMap = useMemo(() => {
-    return new Map(GAME_COVERS.map(cover => [cover.title, cover.coverImage]));
-  }, []);
 
 const GameCenterApp = () => {
   const navigate = useNavigate();
@@ -105,7 +86,7 @@ const GameCenterApp = () => {
     <div className="group relative bg-gray-900/40 border border-white/5 rounded-2xl overflow-hidden hover:border-green-500/30 transition-all hover:-translate-y-1 shadow-2xl">
       <div className="aspect-square relative">
         <LazyImage 
-          src={item.coverImage || gameCoversMap.get(item.title) || 'https://via.placeholder.com/400x400?text=No+Image'} 
+          src={item.coverImage || 'https://via.placeholder.com/400x400?text=No+Image'} 
           alt={item.title}
           className="w-full h-full object-cover"
         />
