@@ -8,8 +8,11 @@ export default defineConfig({
     tailwindcss(),
   ],
   base: '/CherryOS/',
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   build: {
-    sourcemap: true, // Enabled for debugging
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
