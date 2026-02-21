@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Monitor, Music, Clapperboard, Gamepad2 } from 'lucide-react';
+import SystemHealth from './SystemHealth';
 
 const Desktop = () => {
   const navigate = useNavigate();
+  const [showHealth, setShowHealth] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+        setShowHealth(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const apps = [
     { id: 'watch', name: 'Watch List', icon: <Clapperboard size={64} />, path: '/watch', color: 'text-yellow-500' },      
@@ -14,6 +26,8 @@ const Desktop = () => {
 
   return (
     <div className="h-screen w-screen bg-[#0a0a0a] flex flex-col p-12 overflow-hidden">
+      {showHealth && <SystemHealth onClose={() => setShowHealth(false)} />}
+      
       <div className="flex-1 flex items-center justify-center">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 lg:gap-24 w-full max-w-6xl justify-items-center">
           {apps.map((app) => (
