@@ -6,31 +6,32 @@ const Desktop = () => {
   const navigate = useNavigate();
 
   const apps = [
-    { id: 'watch', name: 'Watch List', icon: <Clapperboard size={32} />, path: '/watch', color: 'text-yellow-500' },
-    { id: 'songs', name: 'My Music', icon: <Music size={32} />, path: '/songs', color: 'text-pink-500' },
-    { id: 'games', name: 'Game Center', icon: <Gamepad2 size={32} />, path: '/games', color: 'text-green-500' },
-    { id: 'studio', name: 'Studio Rack', icon: <Monitor size={32} />, path: '/studio', color: 'text-blue-500' },
+    { id: 'watch', name: 'Watch List', icon: <Clapperboard size={64} />, path: '/watch', color: 'text-yellow-500' },      
+    { id: 'songs', name: 'My Music', icon: <Music size={64} />, path: '/songs', color: 'text-pink-500' },
+    { id: 'games', name: 'Game Center', icon: <Gamepad2 size={64} />, path: '/games', color: 'text-green-500' },
+    { id: 'studio', name: 'Studio Rack', icon: <Monitor size={64} />, path: '/studio', color: 'text-blue-500' },
   ];
 
   return (
-    <div className="h-screen w-screen bg-[#0a0a0a] flex flex-col p-6 overflow-hidden">
-      <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8 auto-rows-min">
-        {apps.map((app) => (
-          <button
-            key={app.id}
-            onClick={() => navigate(app.path)}
-            className="flex flex-col items-center gap-2 group transition-transform hover:scale-105 active:scale-95"
-          >
-            <div className={`p-4 rounded-2xl bg-gray-900 border border-gray-800 shadow-2xl transition-all group-hover:border-white/20 group-hover:bg-gray-800 ${app.color}`}>
-              {app.icon}
-            </div>
-            <span className="text-xs font-bold text-gray-400 tracking-wide uppercase group-hover:text-white transition-colors">
-              {app.name}
-            </span>
-          </button>
-        ))}
+    <div className="h-screen w-screen bg-[#0a0a0a] flex flex-col p-12 overflow-hidden">
+      <div className="flex-1 flex items-center justify-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 lg:gap-24 w-full max-w-6xl justify-items-center">
+          {apps.map((app) => (
+            <button
+              key={app.id}
+              onClick={() => navigate(app.path)}
+              className="flex flex-col items-center gap-6 group transition-transform hover:scale-110 active:scale-95 w-full"
+            >
+              <div className={`p-10 rounded-[2.5rem] bg-gray-900 border border-gray-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all group-hover:border-white/20 group-hover:bg-gray-800 group-hover:shadow-white/5 ${app.color}`}>
+                {app.icon}
+              </div>
+              <span className="text-sm font-black text-gray-400 tracking-[0.2em] uppercase group-hover:text-white transition-colors">
+                {app.name}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
-      
       <div className="mt-auto flex justify-between items-center text-[10px] font-mono text-gray-600 uppercase tracking-widest border-t border-gray-900 pt-4">
         <span>CherryOS 2.0.0</span>
         <span>Stable Build</span>

@@ -8,11 +8,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   base: '/CherryOS/',
-  esbuild: {
-    drop: ['console', 'debugger'],
-  },
   build: {
-    sourcemap: false,
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -20,5 +17,10 @@ export default defineConfig({
         },
       },
     },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    exclude: ['**/node_modules/**', '**/dist/**', '**/test/e2e/**'],
   },
 });
