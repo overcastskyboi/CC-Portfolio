@@ -7,7 +7,7 @@ const Desktop = () => {
 
   const apps = [
     { id: 'watch', name: 'Watch List', icon: <Clapperboard size={32} />, path: '/watch', color: 'text-yellow-500' },
-    { id: 'songs', name: 'My Songs', icon: <Music size={32} />, path: '/songs', color: 'text-pink-500' },
+    { id: 'songs', name: 'My Music', icon: <Music size={32} />, path: '/songs', color: 'text-pink-500' },
     { id: 'games', name: 'Game Center', icon: <Gamepad2 size={32} />, path: '/games', color: 'text-green-500' },
     { id: 'studio', name: 'Studio Rack', icon: <Monitor size={32} />, path: '/studio', color: 'text-blue-500' },
   ];
