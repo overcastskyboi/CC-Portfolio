@@ -1,6 +1,4 @@
 import js from "@eslint/js";
-import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
 export default [
@@ -23,23 +21,9 @@ export default [
         },
       },
     },
-    plugins: {
-      react,
-      "react-hooks": reactHooks,
-    },
     rules: {
       ...js.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
       "no-unused-vars": "warn",
-      "react/display-name": "off", // Temporarily disabled due to ESLint 10 compatibility issue
-    },
-    settings: {
-      react: {
-        version: "detect",
-      },
     },
   },
 ];
