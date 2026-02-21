@@ -17,3 +17,11 @@ export const GAMING_DATA = {
   steam: { user: "AugustElliott", level: 42, gamesCount: 184, topPlayed: [] },
   retro: { user: "AugustElliott", hardcorePoints: 1200, recentMastery: "Final Fantasy VII" }
 };
+
+export const VST_LIST = {
+  Dynamics: ["CLA-2A", "OTT", "LAxLimit4", "Vocal Rider", "soothe2"],
+  "Reverb/Delay": ["Valhalla VintageVerb", "EchoBoy"],
+  Instruments: ["Serum", "Vital", "Spitfire LABS"],
+  Creative: ["Fresh Air", "Super VHS", "ShaperBox 3"],
+  Utility: ["Auto-Tune Access", "Little AlterBoy"]
+};
